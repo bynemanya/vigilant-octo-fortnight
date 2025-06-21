@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Auto Click Test</title>
+<title>Open Link</title>
 <style>
   body {
     font-family: sans-serif;
@@ -15,31 +15,25 @@
     height: 100vh;
     margin: 0;
   }
-  button {
+  a.button {
     padding: 1.5rem 3rem;
     font-size: 1.5rem;
     background-color: #ff2d55;
-    border: none;
     border-radius: 10px;
     color: white;
+    text-decoration: none;
     cursor: pointer;
   }
 </style>
 </head>
 <body>
 
-<button id="openBtn">Open in Browser</button>
+<a href="https://lovekombat.com/quiz/lovekombat_gender?cc=hr&temp_mail=true&test_user=true" target="_blank" rel="noopener noreferrer" class="button" id="openLink">Open in Browser</a>
 
 <script>
-  const btn = document.getElementById('openBtn');
-
-  btn.addEventListener('click', () => {
-    window.open("https://lovekombat.com/quiz/lovekombat_gender?cc=hr&temp_mail=true&test_user=true", "_blank");
-  });
-
-  // Simulate click on load - most browsers/IG will block this popup
+  // Attempt to simulate click on load — usually blocked
   window.onload = function() {
-    btn.click();
+    document.getElementById('openLink').click();
   };
 </script>
 
