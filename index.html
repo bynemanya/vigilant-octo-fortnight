@@ -1,41 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Open Link</title>
-<style>
-  body {
-    font-family: sans-serif;
-    background: #111;
-    color: #eee;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
-  a.button {
-    padding: 1.5rem 3rem;
-    font-size: 1.5rem;
-    background-color: #ff2d55;
-    border-radius: 10px;
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opening LoveKombat...</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 20px;
+        }
+        .instructions {
+            margin-top: 30px;
+            text-align: left;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .instructions h2 {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+        }
+        .instructions li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .instructions li::before {
+            content: "•";
+            color: #4CAF50;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Opening LoveKombat...</h1>
+        <p>If the page doesn't open automatically in your device's browser, please click the button below.</p>
+        <a id="openExternalButton" class="btn" href="https://lovekombat.com/quiz/lovekombat_gender?cc=hr&temp_mail=true&test_user=true" target="_blank">
+            Continue to LoveKombat
+        </a>
+        <p class="note">This page is attempting to open the link in your device's default browser (e.g., Chrome, Safari) for a better experience.</p>
 
-<a href="https://lovekombat.com/quiz/lovekombat_gender?cc=hr&temp_mail=true&test_user=true" target="_blank" rel="noopener noreferrer" class="button" id="openLink">Open in Browser</a>
+        <div class="instructions" id="manualInstructions" style="display: none;">
+            <h2>Manual Steps if it doesn't open externally:</h2>
+            <p>If you're still in the Instagram app, please try one of these methods:</p>
+            <ul>
+                <li>Look for a "..." (three dots) menu or a share icon in the top right corner.</li>
+                <li>Tap it and select "Open in Browser" or "Open in Safari/Chrome".</li>
+                <li>Alternatively, copy the link and paste it directly into your device's browser.</li>
+            </ul>
+        </div>
+    </div>
 
-<script>
-  // Attempt to simulate click on load — usually blocked
-  window.onload = function() {
-    document.getElementById('openLink').click();
-  };
-</script>
+    <script>
+        const targetUrl = "https://lovekombat.com/quiz/lovekombat_gender?cc=hr&temp_mail=true&test_user=true";
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const openExternalButton = document.getElementById('openExternalButton');
+        const manualInstructions = document.getElementById('manualInstructions');
 
+        function isInstagramInAppBrowser() {
+            // Common User Agent strings for Instagram/Facebook in-app browsers
+            return /instagram|FBAN|FBAV|FBIOS|FBDV|FBPN/i.test(userAgent);
+        }
+
+        function attemptOpenExternal() {
+            if (isInstagramInAppBrowser()) {
+                console.log("Likely in Instagram in-app browser. Attempting external open.");
+
+                // --- Android Specific Attempt (using Intent URL for Chrome) ---
+                if (/Android/i.test(userAgent)) {
+                    const androidIntentUrl = `intent://${targetUrl.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
+                    console.log("Android Intent URL:", androidIntentUrl);
+                    try {
+                        window.location.href = androidIntentUrl;
+                        // Set a timeout to show instructions if auto-redirect fails
+                        setTimeout(() => {
+                            manualInstructions.style.display = 'block';
+                            console.log("Android redirect might have failed, showing manual instructions.");
+                        }, 1500); // Give it a moment to try redirecting
+                        return; // Exit function if Android attempt made
+                    } catch (e) {
+                        console.error("Error with Android Intent:", e);
+                        // Fallback to showing manual instructions
+                        manualInstructions.style.display = 'block';
+                    }
+                }
+
+                // --- iOS Specific Attempt / General Fallback ---
+                // For iOS, direct programmatic opening of Safari is often blocked
+                // Universal Links are needed for reliable app-to-app communication,
+                // which requires server-side setup for lovekombat.com.
+                // Simply navigating `window.location.href` might keep it in-app.
+                // Therefore, we mostly rely on showing manual instructions for iOS.
+
+                // If not Android, or Android intent failed, try basic redirect and show instructions
+                // This might keep it in-app, but it's the best we can do without Universal Links.
+                window.location.href = targetUrl; // This will likely open in-app if not already redirected
+                manualInstructions.style.display = 'block';
+                console.log("iOS or general fallback: showing manual instructions.");
+
+            } else {
+                console.log("Not detected as Instagram in-app browser. Redirecting normally.");
+                window.location.href = targetUrl; // Regular redirect for non-in-app browsers
+            }
+        }
+
+        // Run the attempt on page load
+        document.addEventListener('DOMContentLoaded', attemptOpenExternal);
+
+        // Ensure the button also tries to open externally
+        openExternalButton.onclick = function(event) {
+            // Prevent default link behavior if JS handles it, but target="_blank" is also useful
+            // event.preventDefault();
+            // This button explicitly uses target="_blank" which can help on some platforms.
+            // No need for extra JS if target="_blank" is effective.
+        };
+    </script>
 </body>
 </html>
